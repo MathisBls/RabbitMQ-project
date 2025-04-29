@@ -14,7 +14,5 @@ for worker in workers:
     p = subprocess.Popen(["python", worker])
     processes.append(p)
 
-print("Tous les workers sont lancés. CTRL+C pour arrêter.")
-
 for p in processes:
     p.wait()

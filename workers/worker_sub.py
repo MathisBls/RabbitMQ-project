@@ -18,8 +18,18 @@ def callback(ch, method, properties, body):
         ch.basic_publish(exchange='', routing_key='results_queue', body=json.dumps(result))
         print(f"[SUB] Résultat envoyé : {result}")
 
+def connect_to_rabbitmq():
+    while True:
+        try:
+            connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+            print("✅ Connexion à RabbitMQ réussie")
+            return connection
+        except pika.exceptions.AMQPConnectionError:
+            print("⏳ En attente de RabbitMQ...")
+            time.sleep(2)
+
 def main():
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    connection = connect_to_rabbitmq()
     channel = connection.channel()
     channel.queue_declare(queue='requests_queue')
     channel.queue_declare(queue='results_queue')
